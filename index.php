@@ -1,5 +1,27 @@
 <?php
 require_once 'config/koneksi.php';
+
+// Tampilkan pesan sukses/error jika ada
+if (isset($_GET['status'])) {
+    $status = $_GET['status'];
+    $message = '';
+    $type = '';
+    
+    if ($status == 'success') {
+        $message = '✅ Data berhasil ditambahkan!';
+        $type = 'success';
+    } elseif ($status == 'updated') {
+        $message = '✏️ Data berhasil diupdate!';
+        $type = 'success';
+    } elseif ($status == 'deleted') {
+        $message = '🗑️ Data berhasil dihapus!';
+        $type = 'success';
+    } elseif ($status == 'error') {
+        $message = '❌ Gagal memproses data!';
+        $type = 'error';
+    }
+}
+
 $query = "SELECT * FROM tb_absensi ORDER BY id DESC";
 $result = $conn->query($query);
 ?>
@@ -89,13 +111,35 @@ $result = $conn->query($query);
             color: red;
             font-weight: bold;
         }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <h2>Data Absensi Siswa</h2>
     
-    <a href="tambah_absensi.php" class="btn-tambah">+ Tambah Absensi</a>
+    <?php if (isset($message)): ?>
+        <div class="alert-<?php echo $type; ?>">
+            <?php echo $message; ?>
+        </div>
+    <?php endif; ?>
+    
+    <a href="tambah.php" class="btn-tambah">+ Tambah Absensi</a>
     
     <table>
         <thead>
@@ -138,8 +182,8 @@ $result = $conn->query($query);
                             ?>
                         </td>
                         <td>
-                            <a href="edit_absensi.php?id=<?php echo $row['id']; ?>" class="btn-edit">Edit</a>
-                            <a href="hapus_absensi.php?id=<?php echo $row['id']; ?>" class="btn-hapus" onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</a>
+                            <a href="edit.php?id=<?php echo $row['id']; ?>" class="btn-edit">Edit</a>
+                            <a href="hapus.php?id=<?php echo $row['id']; ?>" class="btn-hapus" onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</a>
                         </td>
                     </tr>
                 <?php endwhile; ?>
